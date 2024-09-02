@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/font_outline" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
