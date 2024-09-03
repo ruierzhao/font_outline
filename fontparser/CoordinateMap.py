@@ -37,9 +37,9 @@ class CoordinateMap:
         _wkt = self.contours2wkt(trans_contours)
         geometry = QgsGeometry.fromWkt(_wkt)
 
-        # fields = QgsFields()
-        # fields.append(QgsField('id', QVariant.Int))
-        feature = QgsFeature(i)
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        feature = QgsFeature(fields)
         feature.setGeometry(geometry)
 
         self.features.append(feature)
@@ -67,11 +67,21 @@ class CoordinateMap:
         return wkt_str
     
 
-    def toGeojson(self):
+    def toGeojson(self, savepath):
         layer = QgsVectorLayer('Polygon?crs=EPSG:4326', 'fontoutline_temporary_layer', 'memory')
         layer.addFeatures(self.features)
 
-        writer = QgsVectorFileWriter('output5656.geojson', 'UTF-8', layer.fields(), QgsWkbTypes.Polygon, layer.crs(), 'GeoJSON')
+        # 获取数据提供者
+        provider = layer.dataProvider()
+
+        # 添加字段
+        provider.addAttributes([QgsField('id', QVariant.Int)])
+        layer.updateFields()
+        
+        # 添加要素
+        provider.addFeatures(self.features)
+        
+        writer = QgsVectorFileWriter(savepath, 'UTF-8', layer.fields(), QgsWkbTypes.Polygon, layer.crs(), 'GeoJSON')
         for feature in layer.getFeatures():
             writer.addFeature(feature)
         del writer

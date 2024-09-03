@@ -36,7 +36,7 @@ class FontParser:
         
 
     # 解析输入字符串为矢量数据
-    def parse(self, input_str, location_text):
+    def parse(self, input_str, location_text, savepath):
         coordMap = CoordinateMap(location_text)
 
         for i, input_char in enumerate(input_str):
@@ -46,7 +46,7 @@ class FontParser:
             
             self.contourExtractor.reboot() # TODO: debug写法，待优化
 
-        coordMap.toGeojson()
+        coordMap.toGeojson(savepath)
         
         # return geonjson
 

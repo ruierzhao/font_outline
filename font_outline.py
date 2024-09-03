@@ -192,7 +192,7 @@ class FontOutline:
 
     def _save2file(self, input_str, location_text, save_path):
         fontparse = FontParser(os.path.join(self.plugin_dir,"assets", "msyahei.ttf"))
-        vector = fontparse.parse(input_str, location_text)
+        fontparse.parse(input_str, location_text, save_path)
 
         self.iface.messageBar().pushMessage("success", f"成功生成 geojson 文件。", level=Qgis.Info, duration=5)
 
