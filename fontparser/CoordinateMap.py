@@ -3,7 +3,8 @@
 把字体坐标映射到地图坐标
 """
 from .CoordinateConverter import ContourAffine, CoordinateConverter
-from qgis.core import QgsGeometry, QgsPointXY
+from qgis.core import QgsGeometry, QgsFeature, QgsFields, QgsField, QgsVectorLayer, QgsVectorFileWriter, QgsWkbTypes
+from qgis.PyQt.QtCore import QVariant
 
 class CoordinateMap:
     """
@@ -25,14 +26,56 @@ class CoordinateMap:
             self.affine = ContourAffine(basePoint, CoordinateMap.width, CoordinateMap.gap)
         except:
             raise Exception("起始坐标解析错误。。。")
+        self.features = []
 
     
     def font2map(self, contourExtractor, i):
         """获取仿射变换后的坐标。"""
-        # print("== cc:", contours2wkt(contourExtractor.contours))
         # 缩放字体
-        vv = self.affine.transform(contourExtractor, i)
-        # print("== cc:", contours2wkt(vv))
+        trans_contours = self.affine.transform(contourExtractor, i)
+        # 构建feature
+        _wkt = self.contours2wkt(trans_contours)
+        geometry = QgsGeometry.fromWkt(_wkt)
+
+        # fields = QgsFields()
+        # fields.append(QgsField('id', QVariant.Int))
+        feature = QgsFeature(i)
+        feature.setGeometry(geometry)
+
+        self.features.append(feature)
+
+
+    def contours2wkt(self, contours):
+        i = 0
+        wkt_str = "polygon("
+        for contour in contours:
+            if i == 0:
+                wkt_str += "("
+            else:
+                wkt_str += ",("
+
+            point_1 = self.coordConverter.to_4326(contour[0][0], contour[0][1])
+
+            for point in contour:
+                _point = self.coordConverter.to_4326(point[0], point[1])
+                wkt_str += str(_point.x()) + " " + str(_point.y()) + ", "
+                
+            wkt_str += str(point_1.x()) + " " + str(point_1.y()) + ")"
+            i += 1
+        wkt_str += ")"
+
+        return wkt_str
+    
+
+    def toGeojson(self):
+        layer = QgsVectorLayer('Polygon?crs=EPSG:4326', 'fontoutline_temporary_layer', 'memory')
+        layer.addFeatures(self.features)
+
+        writer = QgsVectorFileWriter('output5656.geojson', 'UTF-8', layer.fields(), QgsWkbTypes.Polygon, layer.crs(), 'GeoJSON')
+        for feature in layer.getFeatures():
+            writer.addFeature(feature)
+        del writer
+        
 
         
 

@@ -43,6 +43,10 @@ class FontParser:
             print("==input_char: ", input_char)
             self._getContours(input_char)
             coordMap.font2map(self.contourExtractor, i)
+            
+            self.contourExtractor.reboot() # TODO: debug写法，待优化
+
+        coordMap.toGeojson()
         
         # return geonjson
 
