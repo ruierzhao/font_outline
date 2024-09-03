@@ -26,28 +26,26 @@ class FontParser:
 
         return self.bcmap.get(charuni, None)
 
-    # 解析输入字符为矢量数据
-    def __parse(self, input_char, location_text):
+    # 获取字体坐标数组
+    def _getContours(self, input_char):
         input_char_bcmap = self._getUniCode(input_char) # self.bcmap.get(ord(input_char),None)
         if input_char_bcmap is None:
             print("char: ", input_char, " bestmap is none")
             return
         self.glyf_table[input_char_bcmap].draw(self.contourExtractor, self.glyf_table)
         
-        _wkt = self.contourExtractor.parse2wkt()
-        self._wkts.append(_wkt)
-        
-        return _wkt
-
-
 
     # 解析输入字符串为矢量数据
     def parse(self, input_str, location_text):
         coordMap = CoordinateMap(location_text)
 
         for i, input_char in enumerate(input_str):
-            print("input_char: ", input_char)
-            _wkt = self.__parse(input_char)
-            coordMap.font2map(_wkt)
+            print("==input_char: ", input_char)
+            self._getContours(input_char)
+            coordMap.font2map(self.contourExtractor, i)
+        
+        # return geonjson
+
+        
         
 

@@ -1,5 +1,7 @@
 from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsPointXY, QgsWkbTypes, QgsGeometry
 
+from .ContourExtractor import ContourExtractor
+
 class CoordinateConverter:
     def __init__(self):
         # 定义 EPSG:4326 和 EPSG:3857 的坐标参考系
@@ -24,8 +26,8 @@ class CoordinateConverter:
 
 
 
-class WktAffine:
-    def __init__(self, base_position, width):
+class ContourAffine:
+    def __init__(self, base_position, width, gap):
         """
         初始化 WktScaler。
         :param base_position: 图形的新基准位置 (x, y)
@@ -33,6 +35,31 @@ class WktAffine:
         """
         self.base_x, self.base_y = base_position
         self.new_width = width
+        self.gap = gap
+
+    def transform(self, contourExtractor:ContourExtractor, i):
+        """
+        变换contour坐标：
+        """
+        minX, minY, maxX, maxY = contourExtractor.bbox()
+        width = maxX - minX
+        height = maxY - minY
+        # 计算缩放因子
+        scale_x = self.new_width / width
+        scale_y = scale_x * (height / width)  # 保持宽高比
+
+        contours = contourExtractor.coords()
+        
+        # 平应之后的坐标
+        pin_base_x = self.base_x + (self.new_width + self.gap) * i
+        pin_base_y = self.base_y
+
+        for i, contour in enumerate(contours):
+            for j, point in enumerate(contour):
+                contours[i][j] = (pin_base_x + minX + (point[0] - minX) * scale_x, pin_base_y + minY + (point[1] - minY) * scale_y)
+
+        return contours
+
 
     def scale_and_translate_wkt(self, wkt):
         """
@@ -82,7 +109,7 @@ if __name__ == "__main__":
     wkt = "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (1.7 6.6, 5.6 7.7, 7 5.5, 7.025 5.4, 7.7 3, 1.6 1.5, 1.5 4.3, 1.7 6.6))"
     
     # 初始化 WktScaler：基准位置 (50, 50)，新宽度 20
-    scaler = WktAffine(base_position=(50, 50), width=20)
+    scaler = ContourAffine(base_position=(50, 50), width=20)
     
     # 应用缩放和平移变换
     transformed_wkt = scaler.scale_and_translate_wkt(wkt)
