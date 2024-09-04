@@ -31,6 +31,7 @@ from qgis.PyQt import QtWidgets
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'font_outline_dialog_base.ui'))
 
+# from .ui.font_outline_dialog import Ui_FontOutlineDialogBase as FORM_CLASS
 
 class FontOutlineDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):

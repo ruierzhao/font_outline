@@ -115,6 +115,15 @@
      <height>27</height>
     </rect>
    </property>
+   <property name="filter">
+    <string>geojson,json</string>
+   </property>
+   <property name="storageMode">
+    <enum>QgsFileWidget::SaveFile</enum>
+   </property>
+   <property name="relativeStorage">
+    <enum>QgsFileWidget::Absolute</enum>
+   </property>
   </widget>
  </widget>
  <customwidgets>

@@ -174,18 +174,23 @@ class FontOutline:
             input_str = self.dlg.lineEdit.text()
             location_text = self.dlg.location_text.text()
             saveFileWidget = self.dlg.saveFileWidget
-            saveFileWidget.setStorageMode(3)
-            saveFileWidget.setFilter("geojson;;json")
 
-            save_path = saveFileWidget.filePath()
+            # self.dlg.saveFileWidget.setStorageMode(3)
+            # self.dlg.saveFileWidget.setFilter('GeoJSON Files (*.geojson);;All Files (*)')
+            # saveFileWidget.setFilter("geojson;;json")
 
-            print("save_path:", save_path)
+            print("saveFileWidget:", self.dlg.saveFileWidget)
+
+            save_path = self.dlg.saveFileWidget.filePath()
+
+            print("input_str:", input_str)
             print("location_text: ", location_text)
+            print("save_path:", save_path)
 
-            self._save2file(input_str, location_text, saveFileWidget)
+            self._save2file(input_str, location_text, save_path)
 
-            # self._result2project(save_path)
-            self._result2project(r"C:\Users\Raino\Desktop\raino1.geojson")
+            self._result2project(save_path)
+            # self._result2project(r"C:\Users\Raino\Desktop\raino1.geojson")
 
             # 显示结果
             # QMessageBox.information(self.iface.mainWindow(), "finish!!!", f"fontoutline plugin finished, the save file to {save_path}")

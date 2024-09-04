@@ -3,14 +3,13 @@
 把字体坐标映射到地图坐标
 """
 from .CoordinateConverter import ContourAffine, CoordinateConverter
-from qgis.core import QgsGeometry, QgsFeature, QgsFields, QgsField, QgsVectorLayer, QgsVectorFileWriter, QgsWkbTypes
+from qgis.core import QgsProject, QgsGeometry, QgsFeature, QgsFields, QgsField, QgsVectorLayer, QgsVectorFileWriter, QgsWkbTypes, QgsCoordinateTransformContext
 from qgis.PyQt.QtCore import QVariant
 
 class CoordinateMap:
     """
     location_base_text = "24.52533,103.79736"
     """
-
     # 字体在3857地图上的实际宽度 (米)
     # 高度根据字体宽高比确定
     width = 5000
@@ -41,6 +40,7 @@ class CoordinateMap:
         fields.append(QgsField('id', QVariant.Int))
         feature = QgsFeature(fields)
         feature.setGeometry(geometry)
+        
 
         self.features.append(feature)
 
@@ -71,25 +71,35 @@ class CoordinateMap:
         layer = QgsVectorLayer('Polygon?crs=EPSG:4326', 'fontoutline_temporary_layer', 'memory')
         layer.addFeatures(self.features)
 
-        # 获取数据提供者
-        provider = layer.dataProvider()
-
         # 添加字段
-        provider.addAttributes([QgsField('id', QVariant.Int)])
+        provider = layer.dataProvider()
+        provider.addAttributes(self.features[0].fields())
         layer.updateFields()
-        
-        # 添加要素
         provider.addFeatures(self.features)
 
-        QgsVectorFileWriter.create(savepath, layer.fields())
+        # 保存选项
+        saveoptions =  QgsVectorFileWriter.SaveVectorOptions()
+        saveoptions.driverName = "GEOJSON"
+        saveoptions.fileEncoding = "UTF-8"
+
+        # 不知道啥区别
+        tcontex = QgsProject.instance().transformContext()
+        # tcontex = QgsCoordinateTransformContext()
+        writer:QgsVectorFileWriter = QgsVectorFileWriter \
+                .create(savepath, layer.fields(), QgsWkbTypes.Polygon, layer.crs(), tcontex, saveoptions)
         
-        writer = QgsVectorFileWriter(savepath, 'UTF-8', layer.fields(), QgsWkbTypes.Polygon, layer.crs(), 'GeoJSON')
         for feature in layer.getFeatures():
+            # writer.addFeatureWithStyle(feature, outputUnit=Qgis.DistanceUnit.Degrees)
             writer.addFeature(feature)
+        error = QgsVectorFileWriter.writeAsVectorFormatV3(layer, savepath, tcontex, saveoptions)
         del writer
+
+        if error == QgsVectorFileWriter.NoError:
+            print(f"Successfully saved GeoJSON file to: {savepath}")
+        else:
+            print(f"Failed to save GeoJSON file. Error code: {error}")
         
 
-        
 
 def contours2wkt(contours):
     i = 0
