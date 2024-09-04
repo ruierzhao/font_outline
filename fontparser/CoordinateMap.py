@@ -80,6 +80,8 @@ class CoordinateMap:
         
         # 添加要素
         provider.addFeatures(self.features)
+
+        QgsVectorFileWriter.create(savepath, layer.fields())
         
         writer = QgsVectorFileWriter(savepath, 'UTF-8', layer.fields(), QgsWkbTypes.Polygon, layer.crs(), 'GeoJSON')
         for feature in layer.getFeatures():
