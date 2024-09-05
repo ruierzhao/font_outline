@@ -160,8 +160,6 @@ class FontOutline:
 
 
     def run(self):
-        """Run method that performs all the real work"""
-        
         if self.first_start == True:
             self.first_start = False
             self.dlg = FontOutlineDialog()
