@@ -28,12 +28,14 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'font_outline_dialog_base.ui'))
+# debug conveniently
+Ui_FontOutlineDialogBase, _ = uic.loadUiType(os.path.join(
+    os.path.dirname(__file__), "ui", 'main_ui.ui'))
 
-# from .ui.font_outline_dialog import Ui_FontOutlineDialogBase as FORM_CLASS
+# run in production
+# from .ui.main_ui import Ui_FontOutlineDialogBase
 
-class FontOutlineDialog(QtWidgets.QDialog, FORM_CLASS):
+class FontOutlineDialog(QtWidgets.QDialog, Ui_FontOutlineDialogBase):
     def __init__(self, parent=None):
         """Constructor."""
         super(FontOutlineDialog, self).__init__(parent)

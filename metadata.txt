@@ -3,17 +3,19 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Font Outline
+name=FontOutline
+description=plugin description
+version=1.0
 qgisMinimumVersion=3.0
-description=this plugin make font outline
-version=0.1
 author=raino
-email=zraino@qq.com
+email=2656537241@qq.com
+about=Your plugin description goes here.
 
-about=Provide a brief description of the plugin and its purpose.
+[python]
+requires=fontTools
 
 tracker=http://bugs
-repository=http://repo
+repository=https://github.com/ruierzhao/font_outline
 # End of mandatory metadata
 
 # Recommended items:
@@ -23,9 +25,9 @@ hasProcessingProvider=no
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=editing, export, geojson, mask
+tags=font-outline, editing, export, geojson, mask, vector
 
-homepage=http://homepage
+homepage=
 category=Plugins
 icon=icon.png
 # experimental flag
@@ -45,14 +47,4 @@ deprecated=False
 # If the plugin can run on QGIS Server.
 server=False
 
-[general]
-name=FontOutline
-description=plugin description
-version=1.0
-qgisMinimumVersion=3.0
-author=raino
-email=2656537241@qq.com
-about=Your plugin description goes here.
 
-[python]
-requires=requests, fontTools

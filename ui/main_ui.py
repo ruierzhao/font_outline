@@ -41,6 +41,8 @@ class Ui_FontOutlineDialogBase(object):
         self.location_text.setObjectName("location_text")
         self.saveFileWidget = QgsFileWidget(FontOutlineDialogBase)
         self.saveFileWidget.setGeometry(QtCore.QRect(160, 130, 251, 27))
+        self.saveFileWidget.setStorageMode(QgsFileWidget.SaveFile)
+        self.saveFileWidget.setRelativeStorage(QgsFileWidget.Absolute)
         self.saveFileWidget.setObjectName("saveFileWidget")
 
         self.retranslateUi(FontOutlineDialogBase)
@@ -56,4 +58,5 @@ class Ui_FontOutlineDialogBase(object):
         self.save_label.setText(_translate("FontOutlineDialogBase", "save:"))
         self.input_label_2.setText(_translate("FontOutlineDialogBase", "location:"))
         self.location_text.setPlaceholderText(_translate("FontOutlineDialogBase", "40.3504,116.2148"))
+        self.saveFileWidget.setFilter(_translate("FontOutlineDialogBase", "geojson"))
 from qgsfilewidget import QgsFileWidget

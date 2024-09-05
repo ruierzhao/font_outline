@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>220</y>
+     <y>240</y>
      <width>521</width>
      <height>41</height>
     </rect>
@@ -94,7 +94,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string notr="true">40.3504,116.2148</string>
+    <string notr="true">24.530015,103.760876</string>
    </property>
    <property name="readOnly">
     <bool>false</bool>
@@ -116,7 +116,7 @@
     </rect>
    </property>
    <property name="filter">
-    <string>geojson,json</string>
+    <string>geojson</string>
    </property>
    <property name="storageMode">
     <enum>QgsFileWidget::SaveFile</enum>
