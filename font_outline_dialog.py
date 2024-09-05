@@ -45,3 +45,10 @@ class FontOutlineDialog(QtWidgets.QDialog, Ui_FontOutlineDialogBase):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+        self.dlg.lineEdit.textChanged.connect(self.on_input_changed)
+
+    def on_input_changed(self, text):
+        if text is "" or text is None:
+            # TODO: 输入字符空值判断
+            print("输入字符串不能为空。")

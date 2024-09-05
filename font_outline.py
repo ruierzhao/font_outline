@@ -169,31 +169,21 @@ class FontOutline:
         self.dlg.show() # show the dialog
         
         result = self.dlg.exec_() # Run the dialog event loop
-        # See if OK was pressed
+
         if result:
             input_str = self.dlg.lineEdit.text()
+            if input_str is "" or input_str is None:
+                return self.iface.messageBar().pushMessage("warning", f"输入字符串为空。执行失败。", level=Qgis.Warning, duration=5)
+
             location_text = self.dlg.location_text.text()
-            saveFileWidget = self.dlg.saveFileWidget
-
-            # self.dlg.saveFileWidget.setStorageMode(3)
-            # self.dlg.saveFileWidget.setFilter('GeoJSON Files (*.geojson);;All Files (*)')
-            # saveFileWidget.setFilter("geojson;;json")
-
-            print("saveFileWidget:", self.dlg.saveFileWidget)
-
             save_path = self.dlg.saveFileWidget.filePath()
-
-            print("input_str:", input_str)
-            print("location_text: ", location_text)
-            print("save_path:", save_path)
+            if not (save_path.endswith(".geojson") and save_path.endswith(".json")) :
+                save_path += ".geojson"
 
             self._save2file(input_str, location_text, save_path)
 
             self._result2project(save_path)
-            # self._result2project(r"C:\Users\Raino\Desktop\raino1.geojson")
 
-            # 显示结果
-            # QMessageBox.information(self.iface.mainWindow(), "finish!!!", f"fontoutline plugin finished, the save file to {save_path}")
 
     def _save2file(self, input_str, location_text, save_path):
         fontparse = FontParser(os.path.join(self.plugin_dir,"assets", "msyahei.ttf"))
@@ -208,7 +198,7 @@ class FontOutline:
 
         # 检查图层是否有效
         if not layer.isValid():
-            print("GeoJSON 图层加载失败")
+            self.iface.messageBar().pushMessage("error", f" geojson 文件：{geojson_path} 加载失败。。", level=Qgis.Error, duration=5)
             return
 
         # 将图层添加到当前项目中
@@ -216,5 +206,5 @@ class FontOutline:
 
         # 反馈信息
         self.iface.messageBar().pushMessage("success", f"成功加载 geojson 文件：{geojson_path}", level=Qgis.Info, duration=5)
-        
+              
 

@@ -25,20 +25,32 @@
 """
 
 try:
-    import fontTools
-except ImportError:
-    print("no fonttool.....")
     import sys
     import os
     sys.path.append(os.path.dirname(__file__))
 
+    import fontTools
+except ImportError:
+    print("no fonttool.....")
+
+    # 确保在插件运行时能够访问依赖项
+    def install_and_import(package):
+        try:
+            __import__(package)
+        except ImportError:
+            try:
+                # 尝试使用 QGIS 的 Python 环境中的 pip 安装包
+                import pip # type: ignore
+                pip.main(['install', package])
+            except AttributeError:
+                # 适用于较新版本的 pip
+                import subprocess
+                subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
+            __import__(package)
+    install_and_import("fontTools")
+
+
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load FontOutline class from file FontOutline.
-
-    :param iface: A QGIS interface instance.
-    :type iface: QgsInterface
-    """
-    #
     from .font_outline import FontOutline
     return FontOutline(iface)
