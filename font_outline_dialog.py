@@ -23,6 +23,7 @@
 """
 
 import os
+from pathlib import Path
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
@@ -46,9 +47,20 @@ class FontOutlineDialog(QtWidgets.QDialog, Ui_FontOutlineDialogBase):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
 
-        self.dlg.lineEdit.textChanged.connect(self.on_input_changed)
+        self.lineEdit.textChanged.connect(self.on_input_changed)
+        self.saveFileWidget.fileChanged.connect(self.on_file_changed)
 
     def on_input_changed(self, text):
         if text is "" or text is None:
             # TODO: 输入字符空值判断
             print("输入字符串不能为空。")
+    
+    def on_file_changed(self, file_path):
+        """
+        TODO: 保存路径处理
+        1. 直接输名字的默认路径设置（qgis默认在`/user/documents` 下）
+        2. 没有文件后缀的情况
+        """
+        if not (file_path.endswith(".geojson") and file_path.endswith(".json")) :
+            file_path += ".geojson"
+        print("== savepath ==", file_path)

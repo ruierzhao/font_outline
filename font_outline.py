@@ -33,8 +33,6 @@ class FontOutline:
             self.plugin_dir,
             'i18n',
             'FontOutline_{}.qm'.format(locale))
-        print("locale: ", locale)
-        print("locale_path: ", locale_path)
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -168,15 +166,12 @@ class FontOutline:
         
         result = self.dlg.exec_() # Run the dialog event loop
 
-        if result:
+        if result :
             input_str = self.dlg.lineEdit.text()
             if input_str is "" or input_str is None:
-                return self.iface.messageBar().pushMessage("warning", f"输入字符串为空。执行失败。", level=Qgis.Warning, duration=5)
-
+                return self.run()
             location_text = self.dlg.location_text.text()
             save_path = self.dlg.saveFileWidget.filePath()
-            if not (save_path.endswith(".geojson") and save_path.endswith(".json")) :
-                save_path += ".geojson"
 
             self._save2file(input_str, location_text, save_path)
 
