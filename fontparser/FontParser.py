@@ -36,6 +36,7 @@ class FontParser:
         
 
     # 解析输入字符串为矢量数据
+    # TODO：如果没提供文件名则加载为临时图层
     def parse(self, input_str, location_text, savepath):
         coordMap = CoordinateMap(location_text)
 

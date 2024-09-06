@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 from .fontparser.FontParser import FontParser
 from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsPointXY, QgsVectorLayer,Qgis
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication 
@@ -169,10 +170,14 @@ class FontOutline:
         if result :
             input_str = self.dlg.lineEdit.text()
             if input_str is "" or input_str is None:
-                return self.run()
-            location_text = self.dlg.location_text.text()
-            save_path = self.dlg.saveFileWidget.filePath()
+                return self.iface.messageBar().pushMessage("warning", f"输入文本为空，生成失败。", level=Qgis.Warning, duration=5)
+                # return self.iface.messageBar().pushWarning("warning", "输入文本为空，生成失败。")
 
+            location_text = self.dlg.location_text.text()
+
+            save_path = self.dlg.saveFileWidget.filePath()
+            save_path = self._checkSavePath(save_path, input_str)
+            
             self._save2file(input_str, location_text, save_path)
 
             self._result2project(save_path)
@@ -191,13 +196,28 @@ class FontOutline:
 
         # 检查图层是否有效
         if not layer.isValid():
-            self.iface.messageBar().pushMessage("error", f" geojson 文件：{geojson_path} 加载失败。。", level=Qgis.Error, duration=5)
-            return
+            return self.iface.messageBar().pushMessage("error", f" geojson 文件：{geojson_path} 加载失败。。", level=Qgis.Error, duration=5)
 
         # 将图层添加到当前项目中
         QgsProject.instance().addMapLayer(layer)
 
         # 反馈信息
         self.iface.messageBar().pushMessage("success", f"成功加载 geojson 文件：{geojson_path}", level=Qgis.Info, duration=5)
+
+    # 处理保存路径
+    def _checkSavePath(self,save_path, input_str):
+        if not os.path.isabs(save_path):
+            default_path = os.environ['HOME'] if os.environ['HOME'] is not None else os.environ['USERPROFILE']
+            if save_path is "" or save_path is None:
+                save_path = os.path.join(default_path, input_str + "_" + str(int(time.time())))
+            else:
+                save_path = os.path.join(default_path, save_path)
+
+        if not (save_path.endswith(".geojson") and save_path.endswith(".json")) :
+            save_path += ".geojson"
+
+        return save_path
+
+            
               
 

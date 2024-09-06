@@ -68,6 +68,9 @@ class CoordinateMap:
     
 
     def toGeojson(self, savepath):
+        if len(self.features) == 0:
+            return print("矢量数据为空，保存失败。")
+
         layer = QgsVectorLayer('Polygon?crs=EPSG:4326', 'fontoutline_temporary_layer', 'memory')
         layer.addFeatures(self.features)
 

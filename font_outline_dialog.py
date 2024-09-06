@@ -23,7 +23,6 @@
 """
 
 import os
-from pathlib import Path
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
@@ -40,27 +39,18 @@ class FontOutlineDialog(QtWidgets.QDialog, Ui_FontOutlineDialogBase):
     def __init__(self, parent=None):
         """Constructor."""
         super(FontOutlineDialog, self).__init__(parent)
-        # Set up the user interface from Designer through FORM_CLASS.
+        # Set up the user interface from Designer through Ui_FontOutlineDialogBase.
         # After self.setupUi() you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
 
-        self.lineEdit.textChanged.connect(self.on_input_changed)
-        self.saveFileWidget.fileChanged.connect(self.on_file_changed)
+        self.lineEdit.editingFinished.connect(self.on_edit_finished)
 
-    def on_input_changed(self, text):
+    def on_edit_finished(self):
+        text = self.lineEdit.text().strip()
         if text is "" or text is None:
             # TODO: 输入字符空值判断
             print("输入字符串不能为空。")
     
-    def on_file_changed(self, file_path):
-        """
-        TODO: 保存路径处理
-        1. 直接输名字的默认路径设置（qgis默认在`/user/documents` 下）
-        2. 没有文件后缀的情况
-        """
-        if not (file_path.endswith(".geojson") and file_path.endswith(".json")) :
-            file_path += ".geojson"
-        print("== savepath ==", file_path)
