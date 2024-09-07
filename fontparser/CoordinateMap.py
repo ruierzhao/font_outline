@@ -89,19 +89,13 @@ class CoordinateMap:
         tcontex = QgsProject.instance().transformContext()
         # tcontex = QgsCoordinateTransformContext()
         writer:QgsVectorFileWriter = QgsVectorFileWriter \
-                .create(savepath, layer.fields(), QgsWkbTypes.Polygon, layer.crs(), tcontex, saveoptions)
+                .create(None, layer.fields(), QgsWkbTypes.Polygon, layer.crs(), tcontex, saveoptions)
         
         for feature in layer.getFeatures():
-            # writer.addFeatureWithStyle(feature, outputUnit=Qgis.DistanceUnit.Degrees)
             writer.addFeature(feature)
-        error = QgsVectorFileWriter.writeAsVectorFormatV3(layer, savepath, tcontex, saveoptions)
+        QgsVectorFileWriter.writeAsVectorFormatV3(layer, savepath, tcontex, saveoptions)
         del writer
 
-        if error == QgsVectorFileWriter.NoError:
-            print(f"Successfully saved GeoJSON file to: {savepath}")
-        else:
-            print(f"Failed to save GeoJSON file. Error code: {error}")
-        
 
 
 def contours2wkt(contours):

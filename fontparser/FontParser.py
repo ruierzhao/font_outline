@@ -6,6 +6,7 @@ from .CoordinateMap import CoordinateMap
 class FontParser:
 
     def __init__(self, fontAssetPath="../assets/msyahei.ttf") -> None:
+        print("curent font family: ", fontAssetPath)
         self.font = TTFont(fontAssetPath)
         self._wkts = []
         self.contourExtractor = ContourExtractor()
@@ -28,6 +29,7 @@ class FontParser:
 
     # 获取字体坐标数组
     def _getContours(self, input_char):
+        print("==input_char: ", input_char)
         input_char_bcmap = self._getUniCode(input_char) # self.bcmap.get(ord(input_char),None)
         if input_char_bcmap is None:
             print("char: ", input_char, " bestmap is none")
@@ -41,7 +43,7 @@ class FontParser:
         coordMap = CoordinateMap(location_text)
 
         for i, input_char in enumerate(input_str):
-            print("==input_char: ", input_char)
+            self.contourExtractor.setChar(input_char)
             self._getContours(input_char)
             coordMap.font2map(self.contourExtractor, i)
             

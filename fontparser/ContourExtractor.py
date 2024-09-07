@@ -5,7 +5,8 @@ class ContourExtractor(BasePen):
     WKT = 1
     QG = 2
     def __init__(self):
-        self.contours = []
+        self._contours = []
+        self._char:str = None
         super().__init__()
 
     def addComponent(self, glyphName, transformation):
@@ -21,31 +22,82 @@ class ContourExtractor(BasePen):
         self.current_contour.extend([pt1, pt2, pt3])
 
     def _closePath(self):
-        self.contours.append(self.current_contour)
+        self._contours.append(self.current_contour)
     
     def coords(self):
-        return self.contours
+        return self._contours
     
     def reboot(self):
-        self.contours = []
+        self._contours = []
+        self._char = None
+    
+    def setChar(self, input_char):
+        """
+        :param input_char:当前字符
+        :type input_char:str
+        """
+        self._char = input_char
     
     def bbox(self):
-        minX =  maxX = self.contours[0][0][0]
-        minY = maxY = self.contours[0][0][1]
-        for contour in self.contours:
+        minX =  maxX = self._contours[0][0][0]
+        minY = maxY = self._contours[0][0][1]
+        for contour in self._contours:
             for point in contour:
-                if minX >= point[0]:minX = point[0] 
+                if minX >= point[0]: minX = point[0]
                 if maxX <= point[0]: maxX = point[0]
                 if minY >= point[1]: minY = point[1]
                 if maxY <= point[1]: maxY = point[1]
         # for debug
         # return f"polygon(({minX} {minY}, {minX} {maxY}, {maxX} {maxY}, {maxX} {minY}, {minX} {minY}))"
-
+        print("==ori_width ", maxX - minX)
+        print("==ori_height ", maxY - minY)
         return (minX, minY, maxX, maxY)
+
+    def wh(self):
+        """
+        计算字符坐标：
+        - 数字
+        input_char:  1
+        ori_width  897
+        ori_height  1582
+        - 小写字母
+        input_char: x
+        ori_width  986
+        ori_height  1106
+        - 大写字母
+        input_char: X
+        ori_width  1265
+        ori_height  1549
+        - 中文
+        input_char: 赵
+        ori_width  1994
+        ori_height  1968
+
+        :return wh:左下角坐标和宽高
+        :type wh:(minx, miny, width, height)
+        """
+        if self.is_lowercase(): return (986, 1106)
+        if self._char.isdigit(): return (897, 1582)
+        if self.is_uppercase(): return (1265, 1549)
+        if self.is_chinese(): return (1994, 1968)
+        return (1265, 1549)
+
+    def is_chinese(self):
+        # 中文字符 Unicode 范围
+        return '\u4e00' <= self._char <= '\u9fff'
+
+    def is_uppercase(self):
+        # 判断是否是大写英文字母
+        return 'A' <= self._char <= 'Z'
+
+    def is_lowercase(self):
+        # 判断是否是小写英文字母
+        return 'a' <= self._char <= 'z'
+ 
 
 
     def parse(self, parsefunc=None):
-        if len(self.contours) == 0:
+        if len(self._contours) == 0:
             print("self.contours 为空。。")
             return
         
@@ -57,8 +109,7 @@ class ContourExtractor(BasePen):
             raise Exception("unexpected parse type error...")
 
         # contours 重设为空
-        self.contours = []
-
+        self._contours = []
         return parse_result
         
 
@@ -72,7 +123,7 @@ class ContourExtractor(BasePen):
         """
         i = 0
         wkt_str = "polygon("
-        for contour in self.contours:
+        for contour in self._contours:
             if i == 0:
                 wkt_str += "("
             else:
