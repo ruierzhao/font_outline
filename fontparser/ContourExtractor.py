@@ -40,7 +40,7 @@ class ContourExtractor(BasePen):
     
     def bbox(self):
         if len(self._contours) == 0:
-            return 
+            raise Exception("it just work!!!")
         minX =  maxX = self._contours[0][0][0]
         minY = maxY = self._contours[0][0][1]
         for contour in self._contours:
@@ -82,10 +82,20 @@ class ContourExtractor(BasePen):
         :return wh:左下角坐标和宽高
         :type wh:(minx, miny, width, height)
         """
+        if self.is_lowercase(): return (986, 1106)
+        if self._char.isdigit(): return (897, 1582)
+        if self.is_uppercase(): return (1265, 1549)
+        if self.is_chinese(): return (2000, 1968)
+        return (1265, 1549)
+
+    def rectange(self):
+        """alias of wh()"""
+        minX, minY, maxX, maxY = self.bbox()
+
         if self.is_lowercase(): return (1265, 1106)
         if self._char.isdigit(): return (897, 1582)
         if self.is_uppercase(): return (1265, 1549)
-        # if self.is_chinese(): return (2000, 1968)
+        if self.is_chinese(): return (2000, 1968)
         return (1265, 1549)
 
     def is_chinese(self):

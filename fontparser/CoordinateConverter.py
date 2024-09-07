@@ -35,8 +35,9 @@ class ContourAffine:
         self.base_x, self.base_y = base_position
         self.new_width = width
         self.gap = gap
+        self._current_x = self.base_x
 
-    def transform(self, contourExtractor:ContourExtractor, i):
+    def transform(self, contourExtractor:ContourExtractor, index):
         """
         变换contour坐标：
         """
@@ -45,18 +46,17 @@ class ContourAffine:
         width, height = contourExtractor.wh()
 
         # 计算缩放因子
-        scale_x = self.new_width / height
+        scale_x = self.new_width / width
         scale_y = scale_x   # 保持宽高比
 
         contours = contourExtractor.coords()
         
         # 平移之后的坐标
-        pin_base_x = self.base_x + (self.new_width + self.gap) * i
+        pin_base_x = self.base_x + (self.new_width + self.gap) * index
+
+        pin_base_y = self.base_y + minY * scale_y # 处理基线，类似g,j之类的字母
         if contourExtractor.is_chinese():
             pin_base_y = self.base_y  # 中文不处理
-        else:
-            pin_base_y = self.base_y + minY * scale_y # 处理基线，类似g,j之类的字母
-        pin_base_y = self.base_y + minY * scale_y # 处理基线，类似g,j之类的字母
 
 
         for i, contour in enumerate(contours):
