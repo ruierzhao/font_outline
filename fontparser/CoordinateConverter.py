@@ -55,7 +55,8 @@ class ContourAffine:
         if contourExtractor.is_chinese():
             pin_base_y = self.base_y  # 中文不处理
         else:
-            pin_base_y = self.base_y + minY * scale_y # 处理下基线，类似g,j之类的字母
+            pin_base_y = self.base_y + minY * scale_y # 处理基线，类似g,j之类的字母
+        pin_base_y = self.base_y + minY * scale_y # 处理基线，类似g,j之类的字母
 
 
         for i, contour in enumerate(contours):

@@ -39,6 +39,8 @@ class ContourExtractor(BasePen):
         self._char = input_char
     
     def bbox(self):
+        if len(self._contours) == 0:
+            return 
         minX =  maxX = self._contours[0][0][0]
         minY = maxY = self._contours[0][0][1]
         for contour in self._contours:
@@ -64,6 +66,10 @@ class ContourExtractor(BasePen):
         input_char: x
         ori_width  986
         ori_height  1106
+        ==input_char:  w
+        w unicode编码为： 119
+        ==ori_width  1567
+        ==ori_height  1106
         - 大写字母
         input_char: X
         ori_width  1265
@@ -76,24 +82,26 @@ class ContourExtractor(BasePen):
         :return wh:左下角坐标和宽高
         :type wh:(minx, miny, width, height)
         """
-        if self.is_lowercase(): return (986, 1106)
+        if self.is_lowercase(): return (1265, 1106)
         if self._char.isdigit(): return (897, 1582)
         if self.is_uppercase(): return (1265, 1549)
-        if self.is_chinese(): return (1994, 1968)
+        if self.is_chinese(): return (2000, 1968)
         return (1265, 1549)
 
     def is_chinese(self):
         # 中文字符 Unicode 范围
+        print("chinese char")
         return '\u4e00' <= self._char <= '\u9fff'
 
     def is_uppercase(self):
         # 判断是否是大写英文字母
+        print("english uppercase char")
         return 'A' <= self._char <= 'Z'
 
     def is_lowercase(self):
         # 判断是否是小写英文字母
+        print("english lowercase char")
         return 'a' <= self._char <= 'z'
- 
 
 
     def parse(self, parsefunc=None):

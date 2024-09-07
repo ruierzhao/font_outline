@@ -168,7 +168,7 @@ class FontOutline:
         result = self.dlg.exec_() # Run the dialog event loop
 
         if result :
-            input_str = self.dlg.lineEdit.text()
+            input_str = self.dlg.lineEdit.text().strip()
             if input_str is "" or input_str is None:
                 return self.iface.messageBar().pushMessage("warning", f"输入文本为空，生成失败。", level=Qgis.Warning, duration=5)
                 # return self.iface.messageBar().pushWarning("warning", "输入文本为空，生成失败。")
@@ -185,6 +185,7 @@ class FontOutline:
 
     def _save2file(self, input_str, location_text, save_path):
         fontparse = FontParser(os.path.join(self.plugin_dir,"assets", "msyahei.ttf"))
+        # fontparse = FontParser(os.path.join(self.plugin_dir,"assets", "SourceCodePro-Regular.ttf"))
         fontparse.parse(input_str, location_text, save_path)
 
         self.iface.messageBar().pushMessage("success", f"成功生成 geojson 文件。", level=Qgis.Info, duration=5)
