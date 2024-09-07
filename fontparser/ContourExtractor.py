@@ -85,7 +85,7 @@ class ContourExtractor(BasePen):
         if self.is_lowercase(): return (1265, 1106)
         if self._char.isdigit(): return (897, 1582)
         if self.is_uppercase(): return (1265, 1549)
-        if self.is_chinese(): return (2000, 1968)
+        # if self.is_chinese(): return (2000, 1968)
         return (1265, 1549)
 
     def is_chinese(self):

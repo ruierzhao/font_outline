@@ -185,11 +185,8 @@ class FontOutline:
 
     def _save2file(self, input_str, location_text, save_path):
         fontparse = FontParser(os.path.join(self.plugin_dir,"assets", "msyahei.ttf"))
-        # fontparse = FontParser(os.path.join(self.plugin_dir,"assets", "SourceCodePro-Regular.ttf"))
         fontparse.parse(input_str, location_text, save_path)
-
-        self.iface.messageBar().pushMessage("success", f"成功生成 geojson 文件。", level=Qgis.Info, duration=5)
-
+        
 
     def _result2project(self, geojson_path):
         # 加载GeoJSON文件作为QGIS矢量图层
@@ -208,7 +205,7 @@ class FontOutline:
     # 处理保存路径
     def _checkSavePath(self,save_path, input_str):
         if not os.path.isabs(save_path):
-            default_path = os.environ['HOME'] if os.environ['HOME'] is not None else os.environ['USERPROFILE']
+            default_path = os.path.join(os.environ['HOME'] if os.environ['HOME'] is not None else os.environ['USERPROFILE'], "Documents")
             if save_path is "" or save_path is None:
                 save_path = os.path.join(default_path, input_str + "_" + str(int(time.time())))
             else:

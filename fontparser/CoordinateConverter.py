@@ -45,7 +45,7 @@ class ContourAffine:
         width, height = contourExtractor.wh()
 
         # 计算缩放因子
-        scale_x = self.new_width / width
+        scale_x = self.new_width / height
         scale_y = scale_x   # 保持宽高比
 
         contours = contourExtractor.coords()
