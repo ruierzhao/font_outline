@@ -53,3 +53,5 @@ pyuic5 ui/main_ui.ui -o ui/main_ui.py
 ## attention
 
 - 卸载插件之前先备份，尤其是在开发过程(卸载插件会删代码目录)🎃
+
+# [LICENSE](LICENSE)
